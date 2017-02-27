@@ -6,15 +6,17 @@ type TransferCallRequest struct {
 	UserID int `json:"user_id"`
 }
 
-type SearchRequest struct {
-	Page        int
-	PerPage     int
-	Order       string
-	From        int
-	To          int
+type Paginate struct {
+	Page    int
+	PerPage int
+	Order   string
+	From    int
+	To      int
+}
+
+type Search struct {
 	PhoneNumber string
 	Email       string
-	Tags        []string
 }
 
 type CreateContactRequest struct {

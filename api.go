@@ -2,6 +2,7 @@ package aircall
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 )
 
@@ -13,7 +14,7 @@ func (client *Client) Ping() (*PingResponse, error) {
 	}
 
 	response := &PingResponse{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
@@ -35,8 +36,10 @@ func (client *Client) Company() (CompanyResponse, error) {
 }
 
 // Users API request
-func (client *Client) Users() (UsersResponse, error) {
-	data, err := client.Get("/users", map[string]string{})
+func (client *Client) Users(paginate Paginate) (UsersResponse, error) {
+	params := buildPaginateParamsMap(paginate)
+	fmt.Println("%v", params)
+	data, err := client.Get("/users", params)
 	response := UsersResponse{}
 
 	if err != nil {
@@ -49,232 +52,262 @@ func (client *Client) Users() (UsersResponse, error) {
 }
 
 // User API request
-func (client *Client) User(ID int) (*UserResponse, error) {
+func (client *Client) User(ID int) (UserResponse, error) {
 	data, err := client.Get("/users/"+strconv.Itoa(ID), map[string]string{})
+	response := UserResponse{}
+
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &UserResponse{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // Numbers API request
-func (client *Client) Numbers() (*NumbersResponse, error) {
-	data, err := client.Get("/numbers", map[string]string{})
+func (client *Client) Numbers(paginate Paginate) (NumbersResponse, error) {
+	params := buildPaginateParamsMap(paginate)
+	data, err := client.Get("/numbers", params)
+	response := NumbersResponse{}
+
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &NumbersResponse{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // Number API request
-func (client *Client) Number(ID int) (*NumberResponse, error) {
+func (client *Client) Number(ID int) (NumberResponse, error) {
 	data, err := client.Get("/numbers/"+strconv.Itoa(ID), map[string]string{})
+	response := NumberResponse{}
+
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &NumberResponse{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // Calls API request
-func (client *Client) Calls() (*CallsResponse, error) {
-	data, err := client.Get("/calls", map[string]string{})
+func (client *Client) Calls(paginate Paginate) (CallsResponse, error) {
+	params := buildPaginateParamsMap(paginate)
+	data, err := client.Get("/calls", params)
+	response := CallsResponse{}
+
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &CallsResponse{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // Call API request
-func (client *Client) Call(ID int) (*CallResponse, error) {
+func (client *Client) Call(ID int) (CallResponse, error) {
 	data, err := client.Get("/calls/"+strconv.Itoa(ID), map[string]string{})
+	response := CallResponse{}
+
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &CallResponse{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // SearchCalls API request
-func (client *Client) SearchCalls(search *SearchRequest) (*CallsResponse, error) {
-	params := buildSearchParamsMap(search)
-	data, err := client.Get("/calls", params)
-	if err != nil {
-		return nil, err
+func (client *Client) SearchCalls(paginate Paginate, search Search) (CallsResponse, error) {
+	params := buildPaginateParamsMap(paginate)
+	searchParams := buildSearchParamsMap(search)
+	for k, v := range searchParams {
+		params[k] = v
 	}
 
-	response := &CallsResponse{}
-	json.Unmarshal(data, response)
+	data, err := client.Get("/calls", params)
+	response := CallsResponse{}
+
+	if err != nil {
+		return response, err
+	}
+
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // TransferCall API request
-func (client *Client) TransferCall(ID int, userID int) (*CallResponse, error) {
+func (client *Client) TransferCall(ID int, userID int) (CallResponse, error) {
 	data, err := client.Post("/calls/"+strconv.Itoa(ID)+"/transfers", TransferCallRequest{
 		UserID: userID,
 	})
+	response := CallResponse{}
 
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &CallResponse{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // DeleteRecording API request
-func (client *Client) DeleteRecording(callID int) (*Response, error) {
+func (client *Client) DeleteRecording(callID int) (Response, error) {
 	data, err := client.Delete("/calls/"+strconv.Itoa(callID)+"/recording", map[string]string{})
+	response := Response{}
 
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &Response{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // DeleteVoicemail API request
-func (client *Client) DeleteVoicemail(callID int) (*Response, error) {
+func (client *Client) DeleteVoicemail(callID int) (Response, error) {
 	data, err := client.Delete("/calls/"+strconv.Itoa(callID)+"/voicemail", map[string]string{})
+	response := Response{}
 
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &Response{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // Contacts API request
-func (client *Client) Contacts() (*ContactsResponse, error) {
-	data, err := client.Get("/contacts", map[string]string{})
+func (client *Client) Contacts(paginate Paginate) (ContactsResponse, error) {
+	params := buildPaginateParamsMap(paginate)
+	data, err := client.Get("/contacts", params)
+	response := ContactsResponse{}
+
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &ContactsResponse{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // Contact API request
-func (client *Client) Contact(ID int) (*ContactResponse, error) {
+func (client *Client) Contact(ID int) (ContactResponse, error) {
 	data, err := client.Get("/contacts/"+strconv.Itoa(ID), map[string]string{})
+	response := ContactResponse{}
+
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &ContactResponse{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // CreateContact API request
-func (client *Client) CreateContact(contact *CreateContactRequest) (*ContactResponse, error) {
+func (client *Client) CreateContact(contact *CreateContactRequest) (ContactResponse, error) {
 	data, err := client.Post("/contacts", contact)
+	response := ContactResponse{}
+
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &ContactResponse{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // UpdateContact API request
-func (client *Client) UpdateContact(ID int, contact *CreateContactRequest) (*ContactResponse, error) {
+func (client *Client) UpdateContact(ID int, contact *CreateContactRequest) (ContactResponse, error) {
 	data, err := client.Post("/contacts/"+strconv.Itoa(ID), contact)
+	response := ContactResponse{}
+
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &ContactResponse{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // SearchContacts API request
-func (client *Client) SearchContacts(search *SearchRequest) (*ContactsResponse, error) {
-
-	params := buildSearchParamsMap(search)
-	data, err := client.Get("/contacts/search", params)
-	if err != nil {
-		return nil, err
+func (client *Client) SearchContacts(paginate Paginate, search Search) (ContactsResponse, error) {
+	params := buildPaginateParamsMap(paginate)
+	searchParams := buildSearchParamsMap(search)
+	for k, v := range searchParams {
+		params[k] = v
 	}
 
-	response := &ContactsResponse{}
-	json.Unmarshal(data, response)
+	data, err := client.Get("/contacts/search", params)
+	response := ContactsResponse{}
+
+	if err != nil {
+		return response, err
+	}
+
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
 // DeleteContact API request
-func (client *Client) DeleteContact(ID int) (*Response, error) {
+func (client *Client) DeleteContact(ID int) (Response, error) {
 	data, err := client.Delete("/contacts/"+strconv.Itoa(ID), map[string]string{})
+	response := Response{}
 
 	if err != nil {
-		return nil, err
+		return response, err
 	}
 
-	response := &Response{}
-	json.Unmarshal(data, response)
+	json.Unmarshal(data, &response)
 
 	return response, nil
 }
 
-func buildSearchParamsMap(search *SearchRequest) map[string]string {
-	var params map[string]string
+func buildSearchParamsMap(search Search) map[string]string {
+	params := make(map[string]string)
 
-	if search.Page > 0 {
-		params["page"] = strconv.Itoa(search.Page)
-	}
-	if search.PerPage > 0 {
-		params["per_page"] = strconv.Itoa(search.Page)
-	}
-	if search.Order != "" {
-		params["order"] = search.Order
-	}
-	if search.From > 0 {
-		params["from"] = strconv.Itoa(search.From)
-	}
-	if search.To > 0 {
-		params["to"] = strconv.Itoa(search.To)
-	}
 	if search.PhoneNumber != "" {
 		params["phone_number"] = search.PhoneNumber
 	}
 	if search.Email != "" {
 		params["email"] = search.Email
+	}
+
+	return params
+}
+
+func buildPaginateParamsMap(paginate Paginate) map[string]string {
+	params := make(map[string]string)
+
+	if paginate.Page > 0 {
+		params["page"] = strconv.Itoa(paginate.Page)
+	}
+	if paginate.PerPage > 0 {
+		params["per_page"] = strconv.Itoa(paginate.PerPage)
+	}
+	if paginate.Order != "" {
+		params["order"] = paginate.Order
+	}
+	if paginate.From > 0 {
+		params["from"] = strconv.Itoa(paginate.From)
+	}
+	if paginate.To > 0 {
+		params["to"] = strconv.Itoa(paginate.To)
 	}
 
 	return params

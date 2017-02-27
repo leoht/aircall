@@ -96,7 +96,7 @@ func buildURL(client *Client, path string, params map[string]string) string {
 	for k, v := range params {
 		values.Add(k, v)
 	}
-	urlBuf.WriteString(values.Encode())
+	urlBuf.WriteString("?" + values.Encode())
 
 	return urlBuf.String()
 }
