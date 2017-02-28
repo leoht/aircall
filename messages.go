@@ -6,6 +6,10 @@ type TransferCallRequest struct {
 	UserID int `json:"user_id"`
 }
 
+type LinkCallRequest struct {
+	Link string `json:"link"`
+}
+
 type Paginate struct {
 	Page    int
 	PerPage int

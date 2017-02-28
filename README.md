@@ -128,6 +128,11 @@ res, err := client.Call(12345)
 call := res.Call
 fmt.Println("Call: ", call.ID, call)
 ```
+### Display Link In Call
+```go
+link := "http://www.mycompany.com"
+res, err := client.LinkCall(12345, link)
+```
 ### Transfer Call To User
 ```go
 userID := 16354

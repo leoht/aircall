@@ -143,6 +143,22 @@ func (client *Client) SearchCalls(paginate Paginate, search Search) (CallsRespon
 	return response, nil
 }
 
+// LinkCall API Request
+func (client *Client) LinkCall(ID int, link string) (CallResponse, error) {
+	data, err := client.Post("/calls/"+strconv.Itoa(ID)+"/link", LinkCallRequest{
+		Link: link,
+	})
+	response := CallResponse{}
+
+	if err != nil {
+		return response, err
+	}
+
+	json.Unmarshal(data, &response)
+
+	return response, nil
+}
+
 // TransferCall API request
 func (client *Client) TransferCall(ID int, userID int) (CallResponse, error) {
 	data, err := client.Post("/calls/"+strconv.Itoa(ID)+"/transfers", TransferCallRequest{
