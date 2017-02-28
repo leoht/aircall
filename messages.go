@@ -19,7 +19,7 @@ type Search struct {
 	Email       string
 }
 
-type CreateContactRequest struct {
+type ContactRequest struct {
 	FirstName    string        `json:"first_name"`
 	LastName     string        `json:"last_name"`
 	CompanyName  string        `json:"company_name"`

@@ -217,7 +217,7 @@ func (client *Client) Contact(ID int) (ContactResponse, error) {
 }
 
 // CreateContact API request
-func (client *Client) CreateContact(contact *CreateContactRequest) (ContactResponse, error) {
+func (client *Client) CreateContact(contact ContactRequest) (ContactResponse, error) {
 	data, err := client.Post("/contacts", contact)
 	response := ContactResponse{}
 
@@ -231,7 +231,7 @@ func (client *Client) CreateContact(contact *CreateContactRequest) (ContactRespo
 }
 
 // UpdateContact API request
-func (client *Client) UpdateContact(ID int, contact *CreateContactRequest) (ContactResponse, error) {
+func (client *Client) UpdateContact(ID int, contact ContactRequest) (ContactResponse, error) {
 	data, err := client.Post("/contacts/"+strconv.Itoa(ID), contact)
 	response := ContactResponse{}
 
