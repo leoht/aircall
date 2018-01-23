@@ -46,7 +46,7 @@ func main() {
         fmt.Println("User", u.ID, u.Name)
 
         // Get specific user
-        userRes, err := client.User(user.ID)
+        userRes, err := client.User(u.ID)
     }
     
     // Get numbers
