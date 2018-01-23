@@ -5,7 +5,7 @@ This Go package provides a wrapper to interact with the [Aircall API](http://dev
 ## How to install
 
 ```
-go get -u github.com/joaoh82/aircall
+go get -u github.com/leoht/aircall
 ```
 
 ## Quick start
@@ -15,7 +15,7 @@ package main
 
 import (
     "fmt"
-    "github.com/joaoh82/aircall"
+    "github.com/leoht/aircall"
 )
 
 func main() {

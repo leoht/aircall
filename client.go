@@ -61,7 +61,7 @@ func (client *Client) Request(method string, path string, params map[string]stri
 		return nil, err
 	}
 
-	rew.Header.Add("Content-Type"), "application/json")
+	rew.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Basic "+basicAuthHeader(client.AppID, client.AppToken))
 
 	c := &http.Client{}
